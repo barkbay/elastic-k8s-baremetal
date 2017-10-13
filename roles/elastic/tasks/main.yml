@@ -1,0 +1,33 @@
+---
+# tasks file for elastic
+
+- name: "Ensure tmp directory exists on master"
+  file:
+    path: "/tmp/k8s-local-pv"
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    state: directory
+
+- name: Create elastic templates
+  template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
+  with_fileglob:
+    - ../templates/*.*
+
+- name:  Create namespace
+  shell: "kubectl apply -f /tmp/k8s-local-pv/namespace.yaml"
+
+- name:  Create discovery service
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
+
+- name:  Create master service
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-svc.yaml -n {{ namespace }}"
+
+- name:  Create data service
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-svc.yaml -n {{ namespace }}"
+
+- name:  Create master deployment
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
+
+- name:  Create data deployment (a.k.a. statefulset)
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"

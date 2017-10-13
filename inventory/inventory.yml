@@ -15,8 +15,10 @@ all:
           ip: 192.168.124.103
           k8s_name: 124-103
       vars:
-        cluster_name: elastic1
         vg: cl
         lv: es1
         size: 512
         mount: /pv/elastic1
+  vars:
+    namespace: elastic1
+    cluster_name: elastic1
