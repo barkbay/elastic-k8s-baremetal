@@ -1,0 +1,22 @@
+all:
+  children:
+    master:
+      hosts:
+        124-100.example.com: 
+    elastic:
+      hosts:
+        124-101.example.com:
+          ip: 192.168.124.101
+          k8s_name: 124-101
+        124-102.example.com:
+          ip: 192.168.124.102
+          k8s_name: 124-102
+        124-103.example.com:
+          ip: 192.168.124.103
+          k8s_name: 124-103
+      vars:
+        cluster_name: elastic1
+        vg: cl
+        lv: es1
+        size: 512
+        mount: /pv/elastic1

@@ -1,0 +1,41 @@
+---
+# tasks file for format
+
+- name: Create logical volume
+  lvol:
+    vg: "{{ vg }}"
+    lv: "{{ lv }}"
+    size: "{{ size }}"
+
+- set_fact:
+    device: "/dev/mapper/{{ vg }}-{{ lv }}"
+
+- name: "Create filesystem"
+  filesystem:
+    dev: '{{ device }}'
+    force: false
+    fstype: xfs
+
+- name: "Ensure the parent mount directory exists"
+  file:
+    path: "{{ mount | dirname  }}"
+    owner: "root"
+    group: "root"
+    mode: "0750"
+    state: directory
+
+- name: "Ensure the mount directory exists"
+  file:
+    path: "{{ mount }}"
+    owner: "root"
+    group: "root"
+    mode: "0777"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    path: "{{ mount }}"
+    src: "{{ device }}"
+    fstype: xfs
+    opts: defaults,noatime,nodiratime
+    state: mounted

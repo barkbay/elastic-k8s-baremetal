@@ -1,0 +1,27 @@
+---
+# tasks file for k8s-local-pv
+
+- name: "Ensure tmp directory exists on master"
+  file:
+    path: "/tmp/k8s-local-pv"
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    state: directory
+  
+- debug:
+    msg: "{{ item }}"
+  with_items: "{{ groups.elastic }}"
+
+- name:  Create PV templates
+  template:
+    src: local-pv.yml
+    dest: "/tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ groups.elastic }}"
+
+- name:  Shell
+  shell: "kubectl create -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+  with_items: "{{ groups.elastic }}"
