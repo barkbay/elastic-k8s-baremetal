@@ -1,0 +1,81 @@
+- name: Checking for elasticsearch.jks
+  local_action:
+    module: stat
+    path : "{{ role_path }}/files/elasticsearch.jks"
+  register: elasticsearch_jks
+  check_mode: no
+
+- name: Checking for logging-es.jks
+  local_action:
+    module: stat
+    path: "{{ role_path }}/files/logging-es.jks"
+  register: logging_es_jks
+  check_mode: no
+
+- name: Checking for truststore.jks
+  local_action:
+    module: stat
+    path: "{{ role_path }}//files/truststore.jks"
+  register: truststore_file
+  check_mode: no
+
+- set_fact:
+    searchguard: true
+  when:
+    - elasticsearch_jks.stat.exists
+    - logging_es_jks.stat.exists
+    - truststore_file.stat.exists
+
+- set_fact:
+    searchguard: false
+  when:
+    - not elasticsearch_jks.stat.exists
+    - not logging_es_jks.stat.exists
+    - not truststore_file.stat.exists
+
+- debug:
+    msg: "Do not generate SSL configuration"
+  check_mode: no
+  when:
+    - not searchguard
+
+- debug:
+    msg: "Generate SSL configuration"
+  check_mode: no
+  when:
+    - searchguard
+
+- name: Copy keystores to master
+  copy:
+    src: "{{ item }}"
+    dest: /tmp/k8s-local-pv/
+    owner: root
+    group: root
+    mode: 0700
+  with_items:
+    - elasticsearch.jks
+    - logging-es.jks
+    - truststore.jks
+
+- name:  Check if searchguard secret already exists
+  shell: "kubectl get secret searchguard -n {{ namespace }}"
+  when:
+    - searchguard
+  register: get_secret_output                              
+  ignore_errors: True                                     
+
+- name: Fail is something seems wrong                     
+  fail:                                                   
+    msg : "Ooops someting is wrong with kubectl"                      
+  when: '"not found" not in get_secret_output.stderr and get_secret_output.rc != 0'
+
+- name:  Delete searchguard secret
+  shell: "kubectl delete secret searchguard -n {{ namespace }}"
+  when:
+    - searchguard
+    - get_secret_output.rc == 0
+
+- name:  Create searchguard secret
+  shell: "kubectl create secret generic searchguard --from-file=/tmp/k8s-local-pv/elasticsearch.jks --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/truststore.jks -n {{ namespace }}"
+  when:
+    - searchguard

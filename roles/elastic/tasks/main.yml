@@ -17,6 +17,10 @@
 - name:  Create namespace
   shell: "kubectl apply -f /tmp/k8s-local-pv/namespace.yaml"
 
+- import_tasks: ssl.yml
+  tags:
+    - ssl
+
 - name:  Create discovery service
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
 
