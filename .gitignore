@@ -1,5 +1,8 @@
 
-# Created by https://www.gitignore.io/api/go,python,ansible
+certificates/*
+!certificates/generate-jks.sh
+!certificates/signing.conf
+!certificates/README.md
 
 ### Ansible ###
 *.retry
