@@ -29,7 +29,7 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-        image: docker.io/openshift/origin-logging-elasticsearch:v3.6.0
+        image: docker.io/openshift/origin-logging-elasticsearch:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: NAMESPACE
@@ -47,9 +47,21 @@ spec:
         - name: HAS_DATA
           value: "true"
         - name: "INSTANCE_RAM"
-          value: "64m"
+          value: "256m"
         - name: "NODE_QUORUM"
           value: "2"
+        - name: "DC_NAME"
+          value: "{{ namespace }}"
+        - name: "POD_LABEL" # For discovery
+          value: "component=elasticsearch"
+        - name: "RECOVER_EXPECTED_NODES"
+          value: "2"
+        - name: "RECOVER_AFTER_TIME"
+          value: "5m"
+        - name: "READINESS_PROBE_TIMEOUT"
+          value: "30"
+        - name: "JAVA_OPTS"
+          value: "-Dlog4j.debug"
         ports:
         - containerPort: 9300
           name: transport
@@ -64,6 +76,8 @@ spec:
           mountPath: /etc/elasticsearch/secret
           readOnly: true
 {% endif %}
+      serviceAccount: elasticsearch                      
+      serviceAccountName: elasticsearch
       volumes:
           - name: elasticsearch-config
             configMap:

@@ -54,8 +54,8 @@
 - name:  Create master deployment
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
 
-# - name:  Create data deployment (a.k.a. statefulset)
-#   shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
+- name:  Create data deployment (a.k.a. statefulset)
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
 
-# - name:  Create client deployment
-#   shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
+- name:  Create client deployment
+  shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
