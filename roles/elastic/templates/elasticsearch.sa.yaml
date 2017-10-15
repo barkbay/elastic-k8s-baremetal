@@ -15,6 +15,7 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - pods
   - endpoints
   verbs:
   - get
