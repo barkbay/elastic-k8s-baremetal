@@ -59,3 +59,21 @@
 
 - name:  Create client deployment
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
+
+- name:  Check if PodDisruptionBudget already exists
+  shell: "kubectl get pdb es-master-pdb -n {{ namespace }}"
+  register: get_pdb_output                              
+  ignore_errors: True                                     
+
+- name: Fail if something seems wrong                     
+  fail:                                                   
+    msg : "Ooops someting is wrong with kubectl"                      
+  when: '"not found" not in get_pdb_output.stderr and get_pdb_output.rc != 0'
+
+- name:  Delete PodDisruptionBudget
+  shell: "kubectl delete pdb/es-master-pdb pdb/es-client-pdb -n {{ namespace }}"
+  when:
+    - get_pdb_output.rc == 0
+
+- name: Create PodDisruptionBudget
+  shell: "kubectl create -f /tmp/k8s-local-pv/elasticsearch.pdb.yaml -n {{ namespace }}"

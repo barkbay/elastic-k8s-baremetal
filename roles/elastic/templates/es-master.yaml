@@ -94,14 +94,3 @@ spec:
             secret:
               secretName: searchguard
 {% endif %}
-
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: es-master-pdb
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      role: master

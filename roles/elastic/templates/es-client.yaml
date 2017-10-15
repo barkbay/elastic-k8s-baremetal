@@ -40,6 +40,14 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         - name: "KUBERNETES_TRUST_CERT"
           value: "true"
         - name: "SERVICE_DNS"
@@ -97,14 +105,3 @@ spec:
             secret:
               secretName: searchguard
 {% endif %}
-
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: es-client-pdb
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      role: client
