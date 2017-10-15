@@ -34,7 +34,7 @@ logger:
   index.indexing.slowlog: TRACE, index_indexing_slow_log_file
 
   # search-guard
-  com.floragunn.searchguard: WARN
+  com.floragunn.searchguard: INFO
 
 additivity:
   index.search.slowlog: false

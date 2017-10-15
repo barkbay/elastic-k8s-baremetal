@@ -40,6 +40,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: "KUBERNETES_TRUST_CERT"
+          value: "true"
+        - name: "SERVICE_DNS"
+          value: "elasticsearch"
         - name: "CLUSTER_NAME"
           value: "{{ namespace}}"
         - name: IS_MASTER
@@ -93,3 +97,15 @@ spec:
             secret:
               secretName: searchguard
 {% endif %}
+
+---
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: es-client-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      role: client

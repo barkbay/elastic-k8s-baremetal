@@ -40,6 +40,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: "KUBERNETES_TRUST_CERT"
+          value: "true"
+        - name: "SERVICE_DNS"
+          value: "elasticsearch"
         - name: "CLUSTER_NAME"
           value: "{{ namespace }}"
         - name: IS_MASTER
@@ -70,7 +74,7 @@ spec:
         - name: elasticsearch-config
           mountPath: /usr/share/java/elasticsearch/config
         - name: storage
-          mountPath: /data
+          mountPath: /elasticsearch/persistent
 {% if searchguard %}
         - name: searchguard
           mountPath: /etc/elasticsearch/secret

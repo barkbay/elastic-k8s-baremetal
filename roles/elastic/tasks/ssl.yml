@@ -1,7 +1,7 @@
 - name: Checking for elasticsearch.jks
   local_action:
     module: stat
-    path : "{{ role_path }}/files/elasticsearch.jks"
+    path : "{{ role_path }}/files/searchguard.key"
   register: elasticsearch_jks
   check_mode: no
 
@@ -15,7 +15,7 @@
 - name: Checking for truststore.jks
   local_action:
     module: stat
-    path: "{{ role_path }}//files/truststore.jks"
+    path: "{{ role_path }}//files/searchguard.truststore"
   register: truststore_file
   check_mode: no
 
@@ -53,9 +53,9 @@
     group: root
     mode: 0700
   with_items:
-    - elasticsearch.jks
+    - searchguard.key
     - logging-es.jks
-    - truststore.jks
+    - searchguard.truststore
     - system.admin.jks
 
 - name:  Check if searchguard secret already exists
@@ -77,6 +77,6 @@
     - get_secret_output.rc == 0
 
 - name:  Create searchguard secret
-  shell: "kubectl create secret generic searchguard --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/elasticsearch.jks --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/truststore.jks -n {{ namespace }}"
+  shell: "kubectl create secret generic searchguard --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore -n {{ namespace }}"
   when:
     - searchguard

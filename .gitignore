@@ -5,6 +5,8 @@ certificates/*
 !certificates/README.md
 
 roles/elastic/files/*.jks
+roles/elastic/files/*.key
+roles/elastic/files/*.truststore
 
 ### Ansible ###
 *.retry

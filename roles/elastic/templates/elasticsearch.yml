@@ -7,14 +7,14 @@ script:
 
 index:
   number_of_shards: {{ es_number_of_shards | default ('1') }}
-  number_of_replicas: {{ es_number_of_replicas | default ('0') }}
+  number_of_replicas: {{ es_number_of_replicas | default ('1') }}
   unassigned.node_left.delayed_timeout: 2m
   translog:
     flush_threshold_size: 256mb
     flush_threshold_period: 5m
 
 node:
-  name: ${DC_NAME}
+#  name: ${DC_NAME}
   master: ${IS_MASTER}
   data: ${HAS_DATA}
   max_local_storage_nodes: 1
@@ -50,7 +50,7 @@ openshift.config:
 
 openshift.searchguard:
   keystore.path: /etc/elasticsearch/secret/system.admin.jks
-  truststore.path: /etc/elasticsearch/secret/truststore.jks
+  truststore.path: /etc/elasticsearch/secret/searchguard.truststore
 
 openshift.operations.allow_cluster_reader: {{allow_cluster_reader | default (false)}}
 
@@ -69,10 +69,10 @@ searchguard:
       enabled: true
       enforce_hostname_verification: false
       keystore_type: JKS
-      keystore_filepath: /etc/elasticsearch/secret/elasticsearch.jks
+      keystore_filepath: /etc/elasticsearch/secret/searchguard.key
       keystore_password: kspass
       truststore_type: JKS
-      truststore_filepath: /etc/elasticsearch/secret/truststore.jks
+      truststore_filepath: /etc/elasticsearch/secret/searchguard.truststore
       truststore_password: tspass
     http:
       enabled: true
@@ -81,5 +81,5 @@ searchguard:
       keystore_password: kspass
       clientauth_mode: OPTIONAL
       truststore_type: JKS
-      truststore_filepath: /etc/elasticsearch/secret/truststore.jks
+      truststore_filepath: /etc/elasticsearch/secret/searchguard.truststore
       truststore_password: tspass
