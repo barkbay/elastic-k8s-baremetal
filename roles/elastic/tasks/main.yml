@@ -9,17 +9,17 @@
     mode: "0700"
     state: directory
 
-- name: Create elastic templates
-  template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
-  with_fileglob:
-    - ../templates/*.*
-
 - name:  Create namespace
   shell: "kubectl apply -f /tmp/k8s-local-pv/namespace.yaml"
 
 - import_tasks: ssl.yml
   tags:
     - ssl
+
+- name: Create elastic templates
+  template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
+  with_fileglob:
+    - ../templates/*.*
 
 - name:  Create discovery service
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"

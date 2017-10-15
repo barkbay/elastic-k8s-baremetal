@@ -61,7 +61,17 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: /data
+{% if searchguard %}
+        - name: searchguard
+          mountPath: /etc/elasticsearch/secret
+          readOnly: true
+{% endif %}
       volumes:
           - emptyDir:
               medium: ""
             name: "storage"
+{% if searchguard %}
+          - name: searchguard
+            secret:
+              secretName: searchguard
+{% endif %}

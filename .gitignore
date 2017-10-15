@@ -4,6 +4,8 @@ certificates/*
 !certificates/signing.conf
 !certificates/README.md
 
+roles/elastic/files/*.jks
+
 ### Ansible ###
 *.retry
 
