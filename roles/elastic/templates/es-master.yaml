@@ -29,8 +29,8 @@ spec:
             add:
               - IPC_LOCK
               - SYS_RESOURCE
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.6.0
-        imagePullPolicy: Always
+        image:  docker.io/openshift/origin-logging-elasticsearch:latest
+        imagePullPolicy: IfNotPresent
         env:
         - name: NAMESPACE
           valueFrom:
@@ -41,24 +41,34 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: "CLUSTER_NAME"
-          value: "{{ cluster_name }}"
-        - name: "NUMBER_OF_MASTERS"
-          value: "2"
-        - name: NODE_MASTER
+          value: "{{ namespace }}"
+        - name: "IS_MASTER"
           value: "true"
-        - name: NODE_INGEST
+        - name: "HAS_DATA"
           value: "false"
-        - name: NODE_DATA
-          value: "false"
-        - name: HTTP_ENABLE
-          value: "false"
-        - name: "ES_JAVA_OPTS"
-          value: "-Xms64m -Xmx64m"
+        - name: "INSTANCE_RAM"
+          value: "256m"
+        - name: "NODE_QUORUM"
+          value: "2"
+        - name: "DC_NAME"
+          value: "{{ namespace }}"
+        - name: "POD_LABEL" # For discovery
+          value: "component=elasticsearch"
+        - name: "RECOVER_EXPECTED_NODES"
+          value: "2"
+        - name: "RECOVER_AFTER_TIME"
+          value: "5m"
+        - name: "READINESS_PROBE_TIMEOUT"
+          value: "30"
+        - name: "JAVA_OPTS"
+          value: "-Dlog4j.debug"
         ports:
         - containerPort: 9300
           name: transport
           protocol: TCP
         volumeMounts:
+        - name: elasticsearch-config
+          mountPath: /usr/share/java/elasticsearch/config
         - name: storage
           mountPath: /data
 {% if searchguard %}
@@ -66,10 +76,15 @@ spec:
           mountPath: /etc/elasticsearch/secret
           readOnly: true
 {% endif %}
+      serviceAccount: elasticsearch                      
+      serviceAccountName: elasticsearch
       volumes:
           - emptyDir:
               medium: ""
             name: "storage"
+          - name: elasticsearch-config
+            configMap:
+              name: logging-elasticsearch
 {% if searchguard %}
           - name: searchguard
             secret:

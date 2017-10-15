@@ -29,8 +29,8 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.6.0
-        imagePullPolicy: Always
+        image: docker.io/openshift/origin-logging-elasticsearch:v3.6.0
+        imagePullPolicy: IfNotPresent
         env:
         - name: NAMESPACE
           valueFrom:
@@ -41,22 +41,38 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: "CLUSTER_NAME"
-          value: "{{ cluster_name }}"
-        - name: NODE_MASTER
+          value: "{{ namespace }}"
+        - name: IS_MASTER
           value: "false"
-        - name: NODE_INGEST
-          value: "false"
-        - name: HTTP_ENABLE
-          value: "false"
-        - name: "ES_JAVA_OPTS"
-          value: "-Xms256m -Xmx256m"
+        - name: HAS_DATA
+          value: "true"
+        - name: "INSTANCE_RAM"
+          value: "64m"
+        - name: "NODE_QUORUM"
+          value: "2"
         ports:
         - containerPort: 9300
           name: transport
           protocol: TCP
         volumeMounts:
+        - name: elasticsearch-config
+          mountPath: /usr/share/java/elasticsearch/config
         - name: storage
           mountPath: /data
+{% if searchguard %}
+        - name: searchguard
+          mountPath: /etc/elasticsearch/secret
+          readOnly: true
+{% endif %}
+      volumes:
+          - name: elasticsearch-config
+            configMap:
+              name: logging-elasticsearch
+{% if searchguard %}
+          - name: searchguard
+            secret:
+              secretName: searchguard
+{% endif %}
   volumeClaimTemplates:
   - metadata:
       name: storage

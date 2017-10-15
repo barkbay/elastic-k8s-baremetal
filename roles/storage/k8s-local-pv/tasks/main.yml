@@ -23,5 +23,5 @@
   with_items: "{{ groups.elastic }}"
 
 - name:  Shell
-  shell: "kubectl create -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+  shell: "kubectl apply -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
   with_items: "{{ groups.elastic }}"

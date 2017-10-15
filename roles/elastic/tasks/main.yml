@@ -21,6 +21,27 @@
   with_fileglob:
     - ../templates/*.*
 
+- name:  Check if configmap already exists
+  shell: "kubectl get configmap logging-elasticsearch -n {{ namespace }}"
+  register: get_cm_output                              
+  ignore_errors: True                                     
+
+- name: Fail is something seems wrong                     
+  fail:                                                   
+    msg : "Ooops someting is wrong with kubectl"                      
+  when: '"not found" not in get_cm_output.stderr and get_cm_output.rc != 0'
+
+- name:  Delete configmap
+  shell: "kubectl delete configmap logging-elasticsearch -n {{ namespace }}"
+  when:
+    - get_cm_output.rc == 0
+
+- name: Create ElasticSearch configmap
+  shell: "kubectl create configmap logging-elasticsearch --from-file=/tmp/k8s-local-pv/elasticsearch.yml --from-file=/tmp/k8s-local-pv/logging.yml -n {{ namespace }}"
+
+- name:  Create service account aggregated-logging-elasticsearch
+  shell: "kubectl apply -f /tmp/k8s-local-pv/elasticsearch.sa.yaml -n {{ namespace }}"
+
 - name:  Create discovery service
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
 
@@ -33,8 +54,8 @@
 - name:  Create master deployment
   shell: "kubectl apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
 
-- name:  Create data deployment (a.k.a. statefulset)
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
+# - name:  Create data deployment (a.k.a. statefulset)
+#   shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
 
-- name:  Create data deployment (a.k.a. statefulset)
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
+# - name:  Create client deployment
+#   shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"

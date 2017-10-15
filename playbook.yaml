@@ -12,7 +12,8 @@
   remote_user: root
   roles:
     - storage/k8s-local-pv
-    - elastic
+  tags:
+    - pv
 
 - name: Deploy ElasticSearch
   hosts: master
