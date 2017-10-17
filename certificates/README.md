@@ -7,7 +7,7 @@ oc adm ca create-signer-cert \
   --name=logging-signer --expire-days=3650
 ```
 
-3. Generate the JKS files :
+2. Generate the JKS files :
 ```
 $ ./generate-jks.sh . logging elastic1
 ```
