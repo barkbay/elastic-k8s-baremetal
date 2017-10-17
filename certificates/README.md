@@ -7,14 +7,9 @@ oc adm ca create-signer-cert \
   --name=logging-signer --expire-days=3650
 ```
 
-2. Create an empty ca.db file :
-```
-$ touch ca.db
-```
-
 3. Generate the JKS files :
 ```
-$ ./generate-jks.sh
+$ ./generate-jks.sh . logging elastic1
 ```
 
 CREDITS : The Openshift Team https://github.com/openshift/openshift-ansible

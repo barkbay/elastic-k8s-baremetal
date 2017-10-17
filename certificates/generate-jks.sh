@@ -159,8 +159,10 @@ fi
 
 dir=$1
 SCRATCH_DIR=$dir
-PROJECT=${2}
-ELASTIC_PROJECT=${3}
+PROJECT=${2} # project name in Openshift, usually "logging"
+ELASTIC_PROJECT=${3} # Namespace where elasticsearch is deployed on Kubernetes
+
+touch $dir/ca.db
 
 echo "Generating admin certificate for SearchGuard + ElasticSearch"
 if [[ ! -f $dir/system.admin.jks || -z "$(keytool -list -keystore $dir/system.admin.jks -storepass kspass | grep sig-ca)" ]]; then
@@ -180,4 +182,15 @@ fi
 [ ! -f $dir/truststore.jks ] && createTruststore
 
 # necessary so that the job knows it completed successfully
+
+read -p "Do you want to copy generated files into Ansible ssl role files ? [y/n]" -n 1 -r
+echo 
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  cp -i -v $dir/elasticsearch.jks ../roles/elastic/files/searchguard.key
+  cp -i -v $dir/truststore.jks ../roles/elastic/files/searchguard.truststore
+  cp -i -v $dir/logging-es.jks ../roles/elastic/files/logging-es.jks
+  cp -i -v $dir/system.admin.jks ../roles/elastic/files/system.admin.jks
+fi
+
 exit 0
