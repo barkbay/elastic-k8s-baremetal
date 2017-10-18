@@ -34,7 +34,7 @@
 
 - name: Mount logical volume
   mount:
-    path: "{{ mount }}"
+    name: "{{ mount }}"
     src: "{{ device }}"
     fstype: xfs
     opts: defaults,noatime,nodiratime
