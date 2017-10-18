@@ -9,10 +9,7 @@
     mode: "0700"
     state: directory
 
-- name:  Create namespace
-  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/namespace.yaml"
-
-- include: ssl.yml
+- include: ssl-pre.yml
   static: true
   tags:
     - ssl
@@ -21,6 +18,14 @@
   template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
   with_fileglob:
     - ../templates/*.*
+
+- name:  Create namespace
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/namespace.yaml"
+
+- include: ssl.yml
+  static: true
+  tags:
+    - ssl
 
 - name:  Check if configmap already exists
   shell: "{{ kubectl_binary }} get configmap logging-elasticsearch -n {{ namespace }}"
