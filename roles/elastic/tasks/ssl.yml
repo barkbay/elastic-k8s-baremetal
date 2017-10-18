@@ -59,7 +59,7 @@
     - system.admin.jks
 
 - name:  Check if searchguard secret already exists
-  shell: "kubectl get secret searchguard -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} get secret searchguard -n {{ namespace }}"
   when:
     - searchguard
   register: get_secret_output
@@ -71,12 +71,12 @@
   when: '"not found" not in get_secret_output.stderr and get_secret_output.rc != 0'
 
 - name:  Delete searchguard secret
-  shell: "kubectl delete secret searchguard -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} delete secret searchguard -n {{ namespace }}"
   when:
     - searchguard
     - get_secret_output.rc == 0
 
 - name:  Create searchguard secret
-  shell: "kubectl create secret generic searchguard --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create secret generic searchguard --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore -n {{ namespace }}"
   when:
     - searchguard

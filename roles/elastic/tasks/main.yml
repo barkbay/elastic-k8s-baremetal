@@ -10,7 +10,7 @@
     state: directory
 
 - name:  Create namespace
-  shell: "kubectl apply -f /tmp/k8s-local-pv/namespace.yaml"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/namespace.yaml"
 
 - import_tasks: ssl.yml
   tags:
@@ -22,7 +22,7 @@
     - ../templates/*.*
 
 - name:  Check if configmap already exists
-  shell: "kubectl get configmap logging-elasticsearch -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} get configmap logging-elasticsearch -n {{ namespace }}"
   register: get_cm_output
   ignore_errors: True
 
@@ -32,36 +32,36 @@
   when: '"not found" not in get_cm_output.stderr and get_cm_output.rc != 0'
 
 - name:  Delete configmap
-  shell: "kubectl delete configmap logging-elasticsearch -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} delete configmap logging-elasticsearch -n {{ namespace }}"
   when:
     - get_cm_output.rc == 0
 
 - name: Create ElasticSearch configmap
-  shell: "kubectl create configmap logging-elasticsearch --from-file=/tmp/k8s-local-pv/elasticsearch.yml --from-file=/tmp/k8s-local-pv/logging.yml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create configmap logging-elasticsearch --from-file=/tmp/k8s-local-pv/elasticsearch.yml --from-file=/tmp/k8s-local-pv/logging.yml -n {{ namespace }}"
 
 - name:  Create service account aggregated-logging-elasticsearch
-  shell: "kubectl apply -f /tmp/k8s-local-pv/elasticsearch.sa.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/elasticsearch.sa.yaml -n {{ namespace }}"
 
 - name:  Create discovery service
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
 
 - name:  Create master service
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-svc.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-svc.yaml -n {{ namespace }}"
 
 - name:  Create data service
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-svc.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-data-svc.yaml -n {{ namespace }}"
 
 - name:  Create master deployment
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
 
 - name:  Create data deployment (a.k.a. statefulset)
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"
 
 - name:  Create client deployment
-  shell: "kubectl apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-client.yaml -n {{ namespace }}"
 
 - name:  Check if PodDisruptionBudget already exists
-  shell: "kubectl get pdb es-master-pdb -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} get pdb es-master-pdb -n {{ namespace }}"
   register: get_pdb_output
   ignore_errors: True
 
@@ -71,9 +71,9 @@
   when: '"not found" not in get_pdb_output.stderr and get_pdb_output.rc != 0'
 
 - name:  Delete PodDisruptionBudget
-  shell: "kubectl delete pdb/es-master-pdb pdb/es-client-pdb -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} delete pdb/es-master-pdb pdb/es-client-pdb -n {{ namespace }}"
   when:
     - get_pdb_output.rc == 0
 
 - name: Create PodDisruptionBudget
-  shell: "kubectl create -f /tmp/k8s-local-pv/elasticsearch.pdb.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create -f /tmp/k8s-local-pv/elasticsearch.pdb.yaml -n {{ namespace }}"
