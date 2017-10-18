@@ -8,7 +8,7 @@
     group: "root"
     mode: "0700"
     state: directory
-  
+
 - debug:
     msg: "{{ item }}"
   with_items: "{{ groups.elastic }}"

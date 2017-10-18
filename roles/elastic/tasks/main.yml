@@ -23,12 +23,12 @@
 
 - name:  Check if configmap already exists
   shell: "kubectl get configmap logging-elasticsearch -n {{ namespace }}"
-  register: get_cm_output                              
-  ignore_errors: True                                     
+  register: get_cm_output
+  ignore_errors: True
 
-- name: Fail is something seems wrong                     
-  fail:                                                   
-    msg : "Ooops someting is wrong with kubectl"                      
+- name: Fail is something seems wrong
+  fail:
+    msg : "Ooops someting is wrong with kubectl"
   when: '"not found" not in get_cm_output.stderr and get_cm_output.rc != 0'
 
 - name:  Delete configmap
@@ -62,12 +62,12 @@
 
 - name:  Check if PodDisruptionBudget already exists
   shell: "kubectl get pdb es-master-pdb -n {{ namespace }}"
-  register: get_pdb_output                              
-  ignore_errors: True                                     
+  register: get_pdb_output
+  ignore_errors: True
 
-- name: Fail if something seems wrong                     
-  fail:                                                   
-    msg : "Ooops someting is wrong with kubectl"                      
+- name: Fail if something seems wrong
+  fail:
+    msg : "Ooops someting is wrong with kubectl"
   when: '"not found" not in get_pdb_output.stderr and get_pdb_output.rc != 0'
 
 - name:  Delete PodDisruptionBudget

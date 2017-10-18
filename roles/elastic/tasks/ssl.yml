@@ -62,12 +62,12 @@
   shell: "kubectl get secret searchguard -n {{ namespace }}"
   when:
     - searchguard
-  register: get_secret_output                              
-  ignore_errors: True                                     
+  register: get_secret_output
+  ignore_errors: True
 
-- name: Fail is something seems wrong                     
-  fail:                                                   
-    msg : "Ooops someting is wrong with kubectl"                      
+- name: Fail is something seems wrong
+  fail:
+    msg : "Ooops someting is wrong with kubectl"
   when: '"not found" not in get_secret_output.stderr and get_secret_output.rc != 0'
 
 - name:  Delete searchguard secret

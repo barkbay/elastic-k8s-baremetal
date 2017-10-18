@@ -2,7 +2,7 @@ all:
   children:
     master:
       hosts:
-        124-100.example.com: 
+        124-100.example.com:
     elastic:
       hosts:
         124-101.example.com:

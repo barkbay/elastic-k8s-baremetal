@@ -80,7 +80,7 @@ spec:
           mountPath: /etc/elasticsearch/secret
           readOnly: true
 {% endif %}
-      serviceAccount: elasticsearch                      
+      serviceAccount: elasticsearch
       serviceAccountName: elasticsearch
       volumes:
           - name: elasticsearch-config

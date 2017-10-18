@@ -184,7 +184,7 @@ fi
 # necessary so that the job knows it completed successfully
 
 read -p "Do you want to copy generated files into Ansible ssl role files ? [y/n]" -n 1 -r
-echo 
+echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   cp -i -v $dir/elasticsearch.jks ../roles/elastic/files/searchguard.key
