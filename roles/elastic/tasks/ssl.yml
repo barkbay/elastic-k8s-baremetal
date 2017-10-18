@@ -17,7 +17,8 @@
   when:
     - searchguard
   register: get_secret_output
-  ignore_errors: True
+  failed_when: false
+  changed_when: false
 
 - name: Fail is something seems wrong
   fail:

@@ -30,7 +30,8 @@
 - name:  Check if configmap already exists
   shell: "{{ kubectl_binary }} get configmap logging-elasticsearch -n {{ namespace }}"
   register: get_cm_output
-  ignore_errors: True
+  failed_when: false
+  changed_when: false
 
 - name: Fail is something seems wrong
   fail:
@@ -69,7 +70,8 @@
 - name:  Check if PodDisruptionBudget already exists
   shell: "{{ kubectl_binary }} get pdb es-master-pdb -n {{ namespace }}"
   register: get_pdb_output
-  ignore_errors: True
+  failed_when: false
+  changed_when: false
 
 - name: Fail if something seems wrong
   fail:
