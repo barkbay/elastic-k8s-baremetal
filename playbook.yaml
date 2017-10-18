@@ -3,13 +3,13 @@
 
 - name: Ensure filesystem is created
   hosts: all:!master
-  remote_user: root
+  become: true
   roles:
     - storage/format
 
 - name: Ensure PV are created
   hosts: master
-  remote_user: root
+  become: true
   roles:
     - storage/k8s-local-pv
   tags:
@@ -17,7 +17,7 @@
 
 - name: Deploy ElasticSearch
   hosts: master
-  remote_user: root
+  become: true
   roles:
     - elastic
   tags:
