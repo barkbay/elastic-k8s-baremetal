@@ -18,7 +18,7 @@
 
 - name: "Ensure the parent mount directory exists"
   file:
-    path: "{{ mount | dirname  }}"
+    path: "{{ mount | dirname }}"
     owner: "root"
     group: "root"
     mode: "0750"
@@ -29,13 +29,21 @@
     path: "{{ mount }}"
     owner: "root"
     group: "root"
-    mode: "0777"
+    mode: "0700"
     state: directory
 
 - name: Mount logical volume
   mount:
-    path: "{{ mount }}"
+    name: "{{ mount }}"
     src: "{{ device }}"
     fstype: xfs
     opts: defaults,noatime,nodiratime
     state: mounted
+
+- name: "Change permissions on the new mountpoint"
+  file:
+    path: "{{ mount }}"
+    owner: "root"
+    group: "root"
+    mode: "0777"
+    state: directory

@@ -3,7 +3,7 @@
 set -e
 
 function usage() {
-  echo Usage: `basename $0` cert_directory logging_namespace_in_openshift elastic_namespace_in_kubernetes 1>&2
+  echo "Usage: $(basename "$0") cert_directory logging_namespace_in_openshift elastic_namespace_in_kubernetes [files_directory]" 1>&2
 }
 
 function generate_JKS_chain() {
@@ -161,6 +161,7 @@ dir=$1
 SCRATCH_DIR=$dir
 PROJECT=${2} # project name in Openshift, usually "logging"
 ELASTIC_PROJECT=${3} # Namespace where elasticsearch is deployed on Kubernetes
+ELASTIC_FILES_DIR=${4:-../roles/elastic/files} # Path for generated files
 
 touch $dir/ca.db
 
@@ -183,14 +184,22 @@ fi
 
 # necessary so that the job knows it completed successfully
 
+# Skip copy if the parent directory is missing
+if [[ ! -d "$(dirname "$ELASTIC_FILES_DIR")" ]]; then
+  echo "'elastic' role directory not found, please copy the files manually" 1>&2
+  exit
+fi
+
 read -p "Do you want to copy generated files into Ansible ssl role files ? [y/n]" -n 1 -r
-echo 
+echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-  cp -i -v $dir/elasticsearch.jks ../roles/elastic/files/searchguard.key
-  cp -i -v $dir/truststore.jks ../roles/elastic/files/searchguard.truststore
-  cp -i -v $dir/logging-es.jks ../roles/elastic/files/logging-es.jks
-  cp -i -v $dir/system.admin.jks ../roles/elastic/files/system.admin.jks
+  [[ -d "$ELASTIC_FILES_DIR" ]] || mkdir "$ELASTIC_FILES_DIR"
+
+  cp -i -v $dir/elasticsearch.jks "$ELASTIC_FILES_DIR"/searchguard.key
+  cp -i -v $dir/truststore.jks    "$ELASTIC_FILES_DIR"/searchguard.truststore
+  cp -i -v $dir/logging-es.jks    "$ELASTIC_FILES_DIR"/logging-es.jks
+  cp -i -v $dir/system.admin.jks  "$ELASTIC_FILES_DIR"/system.admin.jks
 fi
 
 exit 0

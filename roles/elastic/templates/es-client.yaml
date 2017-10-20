@@ -29,7 +29,7 @@ spec:
             add:
               - IPC_LOCK
               - SYS_RESOURCE
-        image: docker.io/openshift/origin-logging-elasticsearch:latest
+        image: {{ images.origin_logging_elasticsearch }}
         imagePullPolicy: IfNotPresent
         env:
         - name: NAMESPACE
@@ -91,7 +91,7 @@ spec:
           mountPath: /etc/elasticsearch/secret
           readOnly: true
 {% endif %}
-      serviceAccount: elasticsearch                      
+      serviceAccount: elasticsearch
       serviceAccountName: elasticsearch
       volumes:
           - emptyDir:

@@ -8,7 +8,7 @@
     group: "root"
     mode: "0700"
     state: directory
-  
+
 - debug:
     msg: "{{ item }}"
   with_items: "{{ groups.elastic }}"
@@ -23,5 +23,5 @@
   with_items: "{{ groups.elastic }}"
 
 - name:  Shell
-  shell: "kubectl apply -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
   with_items: "{{ groups.elastic }}"
