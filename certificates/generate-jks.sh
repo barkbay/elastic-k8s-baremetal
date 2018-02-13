@@ -177,7 +177,7 @@ fi
 
 echo "Generating logging-es.jks (SSL - HTTP /etc/elasticsearch/secret/key in the ElasticSearch container)"
 if [[ ! -f $dir/logging-es.jks || -z "$(keytool -list -keystore $dir/logging-es.jks -storepass kspass | grep sig-ca)" ]]; then
-  generate_JKS_chain false logging-es "elasticsearch-discovery.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch-data.${ELASTIC_PROJECT}.svc.cluster.local, $(join , logging-es{,-ops}{,-cluster}{,.${PROJECT}.svc.cluster.local})"
+  generate_JKS_chain false logging-es "elasticsearch-discovery.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch-data.${ELASTIC_PROJECT}.svc.cluster.local, $(join , logging-es{,-ops}{,-cluster}{,.${PROJECT}.svc.cluster.local}, router-elasticsearch.default.svc.cluster.local)"
 fi
 
 [ ! -f $dir/truststore.jks ] && createTruststore
