@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: es-master
   namespace: {{ namespace }}
@@ -7,6 +7,7 @@ metadata:
     component: elasticsearch
     role: master
 spec:
+  serviceName: elasticsearch-master
   replicas: 3
   template:
     metadata:
@@ -74,7 +75,7 @@ spec:
         - name: elasticsearch-config
           mountPath: /usr/share/java/elasticsearch/config
         - name: storage
-          mountPath: /data
+          mountPath: /elasticsearch/persistent
 {% if searchguard %}
         - name: searchguard
           mountPath: /etc/elasticsearch/secret
@@ -83,9 +84,6 @@ spec:
       serviceAccount: elasticsearch
       serviceAccountName: elasticsearch
       volumes:
-          - emptyDir:
-              medium: ""
-            name: "storage"
           - name: elasticsearch-config
             configMap:
               name: logging-elasticsearch
@@ -94,3 +92,13 @@ spec:
             secret:
               secretName: searchguard
 {% endif %}
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: local-storage-master
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

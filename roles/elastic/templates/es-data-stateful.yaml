@@ -95,7 +95,7 @@ spec:
   - metadata:
       name: storage
       annotations:
-        volume.beta.kubernetes.io/storage-class: local-storage
+        volume.beta.kubernetes.io/storage-class: local-storage-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

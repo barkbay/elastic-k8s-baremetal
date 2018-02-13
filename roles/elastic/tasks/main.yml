@@ -59,7 +59,7 @@
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-data-svc.yaml -n {{ namespace }}"
 
 - name:  Create master deployment
-  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-master.yaml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-master-stateful.yaml -n {{ namespace }}"
 
 - name:  Create data deployment (a.k.a. statefulset)
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-data-stateful.yaml -n {{ namespace }}"

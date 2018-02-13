@@ -13,15 +13,28 @@
     msg: "{{ item }}"
   with_items: "{{ groups.elastic }}"
 
-- name:  Create PV templates
+- name:  Create PV templates - data
   template:
-    src: local-pv.yml
-    dest: "/tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+    src: local-pv-data.yml
+    dest: "/tmp/k8s-local-pv/local-pv-data.{{ item }}.yml"
     owner: root
     group: root
     mode: 0600
   with_items: "{{ groups.elastic }}"
 
 - name:  Shell
-  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/local-pv.{{ item }}.yml"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/local-pv-data.{{ item }}.yml"
+  with_items: "{{ groups.elastic }}"
+
+- name:  Create PV templates - master
+  template:
+    src: local-pv-master.yml
+    dest: "/tmp/k8s-local-pv/local-pv-master.{{ item }}.yml"
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ groups.elastic }}"
+
+- name:  Shell
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/local-pv-master.{{ item }}.yml"
   with_items: "{{ groups.elastic }}"
