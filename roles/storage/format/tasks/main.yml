@@ -1,48 +1,96 @@
 ---
 # tasks file for format
+# TODO: refactor and deduplicate tasks (MBE)
 
-- name: Create logical volume
+- name: Create logical volume for es-data
   lvol:
-    vg: "{{ vg }}"
-    lv: "{{ lv }}"
-    size: "{{ size }}"
+    vg: "{{ vg_data }}"
+    lv: "{{ lv_data }}"
+    size: "{{ size_data }}"
+
+- name: Create logical volume for es-master
+  lvol:
+    vg: "{{ vg_master }}"
+    lv: "{{ lv_master }}"
+    size: "{{ size_master }}"
 
 - set_fact:
-    device: "/dev/mapper/{{ vg }}-{{ lv }}"
+    device_data: "/dev/mapper/{{ vg_data }}-{{ lv_data }}"
 
-- name: "Create filesystem"
+- set_fact:
+    device_master: "/dev/mapper/{{ vg_master }}-{{ lv_master }}"
+
+- name: "Create filesystem - data"
   filesystem:
-    dev: '{{ device }}'
+    dev: '{{ device_data }}'
     force: false
     fstype: xfs
 
-- name: "Ensure the parent mount directory exists"
+- name: "Create filesystem - master"
+  filesystem:
+    dev: '{{ device_master }}'
+    force: false
+    fstype: xfs
+
+- name: "Ensure the parent mount directory exists - data"
   file:
-    path: "{{ mount | dirname }}"
+    path: "{{ mount_data | dirname }}"
     owner: "root"
     group: "root"
     mode: "0750"
     state: directory
 
-- name: "Ensure the mount directory exists"
+- name: "Ensure the parent mount directory exists - master"
   file:
-    path: "{{ mount }}"
+    path: "{{ mount_master | dirname }}"
+    owner: "root"
+    group: "root"
+    mode: "0750"
+    state: directory
+
+- name: "Ensure the mount directory exists - data"
+  file:
+    path: "{{ mount_data }}"
     owner: "root"
     group: "root"
     mode: "0700"
     state: directory
 
-- name: Mount logical volume
+- name: "Ensure the mount directory exists - master"
+  file:
+    path: "{{ mount_master }}"
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    state: directory
+
+- name: Mount logical volume - data
   mount:
-    name: "{{ mount }}"
-    src: "{{ device }}"
+    name: "{{ mount_data }}"
+    src: "{{ device_data }}"
     fstype: xfs
     opts: defaults,noatime,nodiratime
     state: mounted
 
-- name: "Change permissions on the new mountpoint"
+- name: Mount logical volume - master
+  mount:
+    name: "{{ mount_master }}"
+    src: "{{ device_master }}"
+    fstype: xfs
+    opts: defaults,noatime,nodiratime
+    state: mounted
+
+- name: "Change permissions on the new mountpoint - data"
   file:
-    path: "{{ mount }}"
+    path: "{{ mount_data }}"
+    owner: "root"
+    group: "root"
+    mode: "0777"
+    state: directory
+
+- name: "Change permissions on the new mountpoint - master"
+  file:
+    path: "{{ mount_master }}"
     owner: "root"
     group: "root"
     mode: "0777"

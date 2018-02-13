@@ -15,10 +15,14 @@ all:
           ip: 192.168.124.103
           k8s_name: 124-103
       vars:
-        vg: cl
-        lv: es1
-        size: 512
-        mount: /pv/elastic1
+        vg_data: cl
+        lv_data: es1-data
+        size_data: 512
+        mount_data: /pv/elastic1-data
+        vg_master: cl
+        lv_master: es1-master
+        size_master: 512
+        mount_master: /pv/elastic1-master
   vars:
     namespace: elastic1
     cluster_name: elastic1
