@@ -172,7 +172,7 @@ fi
 
 echo "Generating elasticsearch.jks (SSL - Transport /etc/elasticsearch/secret/searchguard.key in the ElasticSearch container)"
 if [[ ! -f $dir/elasticsearch.jks || -z "$(keytool -list -keystore $dir/elasticsearch.jks -storepass kspass | grep sig-ca)" ]]; then
-  generate_JKS_chain true elasticsearch "elasticsearch-discovery.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch-data.${ELASTIC_PROJECT}.svc.cluster.local, $(join , logging-es{,-ops})"
+  generate_JKS_chain true elasticsearch "elasticsearch-discovery.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch-master.${ELASTIC_PROJECT}.svc.cluster.local, elasticsearch-data.${ELASTIC_PROJECT}.svc.cluster.local, $(join , logging-es{,-ops})"
 fi
 
 echo "Generating logging-es.jks (SSL - HTTP /etc/elasticsearch/secret/key in the ElasticSearch container)"
