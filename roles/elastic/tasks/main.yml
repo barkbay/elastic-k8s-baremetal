@@ -52,11 +52,14 @@
 - name:  Create discovery service
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-discovery-svc.yaml -n {{ namespace }}"
 
-- name:  Create master service
+- name:  Create client service
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-svc.yaml -n {{ namespace }}"
 
 - name:  Create data service
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-data-svc.yaml -n {{ namespace }}"
+
+- name:  Create master service
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-master-svc.yaml -n {{ namespace }}"
 
 - name:  Create master deployment
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/es-master-stateful.yaml -n {{ namespace }}"
