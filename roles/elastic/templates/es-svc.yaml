@@ -12,5 +12,7 @@ spec:
     role: client
   ports:
   - name: http
-    port: 9200
     protocol: TCP
+    port: 9200
+    nodePort: {{ cluster_elasticsearch_port }}
+  type: NodePort
