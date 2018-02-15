@@ -8,6 +8,7 @@ metadata:
     role: data
 spec:
   serviceName: elasticsearch-data
+  podManagementPolicy: Parallel
   replicas: 2
   template:
     metadata:
