@@ -27,6 +27,9 @@ spec:
       - name: es-data
         securityContext:
           privileged: true
+{% if dataRunAsUser is defined %}
+          runAsUser: {{ dataRunAsUser }}
+{% endif %}
           capabilities:
             add:
               - IPC_LOCK

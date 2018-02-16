@@ -27,6 +27,9 @@ spec:
       - name: es-master
         securityContext:
           privileged: false
+{% if masterRunAsUser is defined %}
+          runAsUser: {{ masterRunAsUser }}
+{% endif %}
           capabilities:
             add:
               - IPC_LOCK
