@@ -25,6 +25,9 @@ spec:
       - name: es-client
         securityContext:
           privileged: false
+{% if clientRunAsUser is defined %}
+          runAsUser: {{ clientRunAsUser }}
+{% endif %}
           capabilities:
             add:
               - IPC_LOCK
