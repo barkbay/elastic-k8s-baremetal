@@ -27,6 +27,7 @@ all:
     namespace: elastic1
     cluster_name: elastic1
     cluster_elasticsearch_port: 30200
+    network_policies: false
     kubectl_binary: 'kubectl'
     images:
       origin_logging_elasticsearch: 'docker.io/openshift/origin-logging-elasticsearch:latest'
