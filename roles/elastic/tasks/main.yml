@@ -85,3 +85,7 @@
 
 - name: Create PodDisruptionBudget
   shell: "{{ kubectl_binary }} create -f /tmp/k8s-local-pv/elasticsearch.pdb.yaml -n {{ namespace }}"
+
+- name: Set up Network Policies
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/networkpolicies.yml"
+  when: network_policies | bool | default(false)
