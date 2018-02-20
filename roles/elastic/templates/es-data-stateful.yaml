@@ -9,7 +9,7 @@ metadata:
 spec:
   serviceName: elasticsearch-data
   podManagementPolicy: Parallel
-  replicas: 2
+  replicas: {{ dataReplicas | int | default(2) }}
   template:
     metadata:
       labels:

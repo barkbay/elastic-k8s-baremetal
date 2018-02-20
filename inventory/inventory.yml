@@ -31,6 +31,9 @@ all:
     kubectl_binary: 'kubectl'
     images:
       origin_logging_elasticsearch: 'docker.io/openshift/origin-logging-elasticsearch:latest'
+    clientReplicas: 2
+    masterReplicas: 3
+    dataReplicas: 2
     #clientRunAsUser: 1234
     #masterRunAsUser: 2345
     #dataRunAsUser:   3456

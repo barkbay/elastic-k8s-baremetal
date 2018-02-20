@@ -10,9 +10,11 @@ By default the following number of Elasticsearch nodes are deployed:
 * 2 clients for external incoming requests
 * 2 data nodes
 
+The number of replicas can be set in the inventory.
+
 ## Kubernetes features
 
-The deployment used the following K8S features:
+The deployment uses the following K8S features:
 
 * [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) for data and master nodes
 * On data and master nodes, [local-storage persistent volumes](https://kubernetes.io/docs/concepts/storage/volumes/#local) are used; it aims to improve ElasticSearch performance by using a local, attached storage, disk
