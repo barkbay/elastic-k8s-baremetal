@@ -15,7 +15,7 @@ network:
   host: 0.0.0.0
 
 discovery.zen:
-  ping.unicast.hosts: [ "es-master-1.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-2.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-3.elasticsearch-master.{{ namespace }}.svc.cluster.local" ]
+  ping.unicast.hosts: [ "es-master-1.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-2.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-0.elasticsearch-master.{{ namespace }}.svc.cluster.local" ]
   minimum_master_nodes: ${NODE_QUORUM}
 
 gateway:

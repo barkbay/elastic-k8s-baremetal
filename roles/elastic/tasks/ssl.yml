@@ -12,8 +12,10 @@
     - searchguard.truststore
     - truststore
     - system.admin.jks
+    - admin.jks
     - admin-cert
     - admin-key
+    - admin-ca
 
 - template:
     src: passwd.j2
@@ -42,6 +44,6 @@
     - get_secret_output.rc == 0
 
 - name:  Create searchguard secret
-  shell: "{{ kubectl_binary }} create secret generic searchguard --from-file=/tmp/k8s-local-pv/passwd.yml --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore --from-file=/tmp/k8s-local-pv/admin-key --from-file=/tmp/k8s-local-pv/admin-cert --from-file=/tmp/k8s-local-pv/truststore -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create secret generic searchguard --from-file=/tmp/k8s-local-pv/admin.jks --from-file=/tmp/k8s-local-pv/passwd.yml --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore --from-file=/tmp/k8s-local-pv/admin-key --from-file=/tmp/k8s-local-pv/admin-cert --from-file=/tmp/k8s-local-pv/admin-ca --from-file=/tmp/k8s-local-pv/truststore -n {{ namespace }}"
   when:
     - searchguard
