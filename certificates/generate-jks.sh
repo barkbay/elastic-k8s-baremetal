@@ -190,6 +190,14 @@ if [[ ! -d "$(dirname "$ELASTIC_FILES_DIR")" ]]; then
   exit
 fi
 
+echo "Extract admin-cert and admin-key"
+if [ -f system.admin.p12 ] ; then
+    rm -f system.admin.p12
+fi
+keytool -srcstorepass kspass -deststorepass kspass -importkeystore -srckeystore system.admin.jks -destkeystore system.admin.p12 -deststoretype PKCS12
+openssl pkcs12 -passin pass:kspass -in system.admin.p12 -nokeys -out admin-cert
+openssl pkcs12 -passin pass:kspass -in system.admin.p12 -nodes -nocerts -out admin-key
+
 read -p "Do you want to copy generated files into Ansible ssl role files ? [y/n]" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -200,6 +208,8 @@ then
   cp -i -v $dir/truststore.jks    "$ELASTIC_FILES_DIR"/searchguard.truststore
   cp -i -v $dir/logging-es.jks    "$ELASTIC_FILES_DIR"/logging-es.jks
   cp -i -v $dir/system.admin.jks  "$ELASTIC_FILES_DIR"/system.admin.jks
+  cp -i -v $dir/admin-cert       "$ELASTIC_FILES_DIR"/admin-cert
+  cp -i -v $dir/admin-key       "$ELASTIC_FILES_DIR"/admin-key
 fi
 
 exit 0
