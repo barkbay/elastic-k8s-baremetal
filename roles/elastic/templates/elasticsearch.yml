@@ -3,15 +3,7 @@ cluster:
 
 script:
   inline: on
-  indexed: on
-
-index:
-  number_of_shards: {{ es_number_of_shards | default ('1') }}
-  number_of_replicas: {{ es_number_of_replicas | default ('1') }}
-  unassigned.node_left.delayed_timeout: 2m
-  translog:
-    flush_threshold_size: 256mb
-    flush_threshold_period: 5m
+  stored: on
 
 node:
   name: ${NODE_NAME}
@@ -22,23 +14,15 @@ node:
 network:
   host: 0.0.0.0
 
-cloud:
-  kubernetes:
-    pod_label: ${POD_LABEL}
-    pod_port: 9300
-    namespace: ${NAMESPACE}
-
-discovery:
-  type: kubernetes
-  zen.ping.multicast.enabled: false
-  zen.minimum_master_nodes: ${NODE_QUORUM}
+discovery.zen:
+  ping.unicast.hosts: [ "es-master-1.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-2.elasticsearch-master.{{ namespace }}.svc.cluster.local", "es-master-3.elasticsearch-master.{{ namespace }}.svc.cluster.local" ]
+  minimum_master_nodes: ${NODE_QUORUM}
 
 gateway:
   recover_after_nodes: ${NODE_QUORUM}
   expected_nodes: ${RECOVER_EXPECTED_NODES}
   recover_after_time: ${RECOVER_AFTER_TIME}
 
-io.fabric8.elasticsearch.authentication.users: ["system.logging.kibana", "system.logging.fluentd", "system.logging.curator", "system.admin"]
 io.fabric8.elasticsearch.kibana.mapping.app: /usr/share/elasticsearch/index_patterns/com.redhat.viaq-openshift.index-pattern.json
 io.fabric8.elasticsearch.kibana.mapping.ops: /usr/share/elasticsearch/index_patterns/com.redhat.viaq-openshift.index-pattern.json
 io.fabric8.elasticsearch.kibana.mapping.empty: /usr/share/elasticsearch/index_patterns/com.redhat.viaq-openshift.index-pattern.json
@@ -52,13 +36,13 @@ openshift.searchguard:
   keystore.path: /etc/elasticsearch/secret/system.admin.jks
   truststore.path: /etc/elasticsearch/secret/searchguard.truststore
 
-openshift.operations.allow_cluster_reader: {{allow_cluster_reader | default (false)}}
+openshift.operations.allow_cluster_reader: {{allow_cluster_reader | default ('false')}}
+
+openshift.kibana.index.mode: {{es_kibana_index_mode | default('unique')}}
 
 path:
   data: /elasticsearch/persistent/${CLUSTER_NAME}/data
   logs: /elasticsearch/${CLUSTER_NAME}/logs
-  work: /elasticsearch/${CLUSTER_NAME}/work
-  scripts: /elasticsearch/${CLUSTER_NAME}/scripts
 
 searchguard:
   authcz.admin_dn:

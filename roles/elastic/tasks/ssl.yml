@@ -10,7 +10,17 @@
     - searchguard.key
     - logging-es.jks
     - searchguard.truststore
+    - truststore
     - system.admin.jks
+    - admin-cert
+    - admin-key
+
+- template:
+    src: passwd.j2
+    dest: "/tmp/k8s-local-pv/passwd.yml"
+  vars:
+    logging_user_name: "{{ openshift_logging_elasticsearch_prometheus_sa | default('system:serviceaccount:prometheus:prometheus') }}"
+    logging_user_passwd: "{{ 999999999999999999999 | random | to_uuid | hash('md5') | b64encode }}"
 
 - name:  Check if searchguard secret already exists
   shell: "{{ kubectl_binary }} get secret searchguard -n {{ namespace }}"
@@ -32,6 +42,6 @@
     - get_secret_output.rc == 0
 
 - name:  Create searchguard secret
-  shell: "{{ kubectl_binary }} create secret generic searchguard --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create secret generic searchguard --from-file=/tmp/k8s-local-pv/passwd.yml --from-file=/tmp/k8s-local-pv/system.admin.jks --from-file=/tmp/k8s-local-pv/searchguard.key --from-file=/tmp/k8s-local-pv/logging-es.jks --from-file=/tmp/k8s-local-pv/searchguard.truststore --from-file=/tmp/k8s-local-pv/admin-key --from-file=/tmp/k8s-local-pv/admin-cert --from-file=/tmp/k8s-local-pv/truststore -n {{ namespace }}"
   when:
     - searchguard

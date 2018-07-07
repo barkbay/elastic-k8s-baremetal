@@ -1,6 +1,11 @@
 ---
 # tasks file for elastic
 
+- name: "Ensure tmp directory does not exist on master"
+  file:
+    state: absent
+    path: "/tmp/k8s-local-pv"
+
 - name: "Ensure tmp directory exists on master"
   file:
     path: "/tmp/k8s-local-pv"
@@ -14,10 +19,16 @@
   tags:
     - ssl
 
+- name: Create elastic configuration template
+  template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
+  with_fileglob:
+    - ../templates/elasticsearch.yml
+    - ../templates/logging.yml
+
 - name: Create elastic templates
   template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
   with_fileglob:
-    - ../templates/*.*
+    - ../templates/*.yaml
 
 - name:  Create namespace
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/namespace.yaml"
@@ -87,5 +98,5 @@
   shell: "{{ kubectl_binary }} create -f /tmp/k8s-local-pv/elasticsearch.pdb.yaml -n {{ namespace }}"
 
 - name: Set up Network Policies
-  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/networkpolicies.yml"
+  shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/networkpolicies.yaml"
   when: network_policies | bool | default(false)

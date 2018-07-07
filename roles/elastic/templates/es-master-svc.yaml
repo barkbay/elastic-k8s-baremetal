@@ -11,6 +11,7 @@ spec:
     component: elasticsearch
     role: master
   clusterIP: None
+  publishNotReadyAddresses: true
   ports:
   - name: transport
     port: 9300

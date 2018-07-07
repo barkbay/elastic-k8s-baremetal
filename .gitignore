@@ -7,6 +7,9 @@ certificates/*
 roles/elastic/files/*.jks
 roles/elastic/files/*.key
 roles/elastic/files/*.truststore
+roles/elastic/files/admin-cert
+roles/elastic/files/admin-key
+roles/elastic/files/truststore
 
 ### Ansible ###
 *.retry

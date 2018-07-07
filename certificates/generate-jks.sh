@@ -206,6 +206,7 @@ then
 
   cp -i -v $dir/elasticsearch.jks "$ELASTIC_FILES_DIR"/searchguard.key
   cp -i -v $dir/truststore.jks    "$ELASTIC_FILES_DIR"/searchguard.truststore
+  cp -i -v $dir/truststore.jks    "$ELASTIC_FILES_DIR"/truststore
   cp -i -v $dir/logging-es.jks    "$ELASTIC_FILES_DIR"/logging-es.jks
   cp -i -v $dir/system.admin.jks  "$ELASTIC_FILES_DIR"/system.admin.jks
   cp -i -v $dir/admin-cert       "$ELASTIC_FILES_DIR"/admin-cert
