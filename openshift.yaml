@@ -1,0 +1,8 @@
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: Deploy logging CA to masters
+  hosts: masters
+  become: true
+  roles:
+    - openshift_logging_import_ca

@@ -162,6 +162,7 @@ SCRATCH_DIR=$dir
 PROJECT=${2} # project name in Openshift, usually "logging"
 ELASTIC_PROJECT=${3} # Namespace where elasticsearch is deployed on Kubernetes
 ELASTIC_FILES_DIR=${4:-../roles/elastic/files} # Path for generated files
+OPENSHIFT_LOGGING_IMPORT_CA_FILES_DIR=${5:-../roles/openshift_logging_import_ca/files/generated_certs_dir} # Path for openshift_logging_import_ca files, needed to push CA to Openshift
 
 touch $dir/ca.db
 
@@ -215,4 +216,13 @@ then
   cp -i -v $dir/ca.crt            "$ELASTIC_FILES_DIR"/admin-ca
 fi
 
+read -p "Do you want to copy generated files to Ansible openshift_logging_import_ca role files (needed to deploy Kibana and Fluentd) ? [y/n]" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  [[ -d "${OPENSHIFT_LOGGING_IMPORT_CA_FILES_DIR}" ]] || mkdir -p "${OPENSHIFT_LOGGING_IMPORT_CA_FILES_DIR}"
+  cp -i -v $dir/ca.crt $dir/ca.key $dir/ca.serial.txt $dir/signing.conf $dir/ca.db \
+           $dir/elasticsearch.jks $dir/logging-es.jks $dir/system.admin.jks $dir/truststore.jks \
+           "${OPENSHIFT_LOGGING_IMPORT_CA_FILES_DIR}"
+fi
 exit 0

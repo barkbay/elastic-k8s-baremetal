@@ -1,0 +1,13 @@
+---
+# tasks file for openshift_logging_import_ca
+- name: Creates generated certs directory
+  file: path="{{ generated_certs_dir }}" state=directory
+
+- name: Copy each file over that matches the given pattern
+  copy:
+    src: "{{ item }}"
+    dest: "{{ generated_certs_dir }}"
+    owner: "root"
+    mode: 0600
+  with_fileglob:
+    - "../files/generated_certs_dir/*"

@@ -1,0 +1,3 @@
+---
+# vars file for openshift_logging_import_ca
+generated_certs_dir: "/etc/origin/logging"

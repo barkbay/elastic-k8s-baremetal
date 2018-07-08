@@ -11,6 +11,8 @@ roles/elastic/files/admin-cert
 roles/elastic/files/admin-key
 roles/elastic/files/truststore
 
+roles/openshift_logging_import_ca/files/generated_certs_dir
+
 ### Ansible ###
 *.retry
 
