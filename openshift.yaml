@@ -6,3 +6,26 @@
   become: true
   roles:
     - openshift_logging_import_ca
+
+- import_playbook: openshift-ansible/playbooks/init/main.yml
+  vars:
+    l_init_fact_hosts: "oo_masters_to_config"
+    l_openshift_version_set_hosts: "oo_masters_to_config:!oo_first_master"
+    l_sanity_check_hosts: "{{ groups['oo_masters_to_config'] }}"
+
+- name: OpenShift Aggregated Logging
+  hosts: oo_first_master
+  roles:
+  - openshift_logging
+
+- name: Logging Install Checkpoint End
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Set Logging install 'Complete'
+    run_once: true
+    set_stats:
+      data:
+        installer_phase_logging:
+          status: "Complete"
+          end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"

@@ -11,3 +11,8 @@
     mode: 0600
   with_fileglob:
     - "../files/generated_certs_dir/*"
+
+- lineinfile:
+    path: "{{ generated_certs_dir }}/signing.conf"
+    regexp: '^dir\s+='
+    line: "dir = {{ generated_certs_dir }}"
