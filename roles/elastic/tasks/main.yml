@@ -23,7 +23,7 @@
   template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
   with_fileglob:
     - ../templates/elasticsearch.yml
-    - ../templates/logging.yml
+    - ../templates/log4j2.properties
 
 - name: Create elastic templates
   template: src={{ item }} dest=/tmp/k8s-local-pv/{{ item | basename  }}
@@ -55,7 +55,7 @@
     - get_cm_output.rc == 0
 
 - name: Create ElasticSearch configmap
-  shell: "{{ kubectl_binary }} create configmap logging-elasticsearch --from-file=/tmp/k8s-local-pv/elasticsearch.yml --from-file=/tmp/k8s-local-pv/logging.yml -n {{ namespace }}"
+  shell: "{{ kubectl_binary }} create configmap logging-elasticsearch --from-file=/tmp/k8s-local-pv/elasticsearch.yml --from-file=/tmp/k8s-local-pv/log4j2.properties -n {{ namespace }}"
 
 - name:  Create service account aggregated-logging-elasticsearch
   shell: "{{ kubectl_binary }} apply -f /tmp/k8s-local-pv/elasticsearch.sa.yaml -n {{ namespace }}"
